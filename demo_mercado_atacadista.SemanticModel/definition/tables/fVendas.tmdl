@@ -125,7 +125,7 @@ table fVendas
 		mode: import
 		source =
 				let
-				    Fonte = Excel.Workbook(File.Contents("C:\Users\alexandre\OneDrive - dataholds.com\Documentos - dataholds.com\2. Comercial\Demonstrações\Demo Mercado Atacadista\dados\sales_data_with_dates.xlsx"), null, true),
+				    Fonte = Excel.Workbook(File.Contents("C:\GitHub\imersao-ia-rodrigo\dados\sales_data_with_dates.xlsx"), null, true),
 				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
 				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
 				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"data_venda", type date}, {"numero_nota", Int64.Type}, {"codigo_produto", type text}, {"descricao_produto", type text}, {"codigo_cliente", type text}, {"descricao_cliente", type text}, {"valor_unitario_produto", type number}, {"quantidade_vendida_produto", Int64.Type}, {"valor_total", type number}, {"custo_da_venda", type number}, {"valor_tabela_de_preco_do_produto", Int64.Type}}),
@@ -140,5 +140,5 @@ table fVendas
 
 	annotation PBI_NavigationStepName = Navegação
 
-	annotation PBI_ResultType = Table
+	annotation PBI_ResultType = Exception
 
