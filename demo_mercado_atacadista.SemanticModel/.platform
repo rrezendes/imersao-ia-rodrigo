@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "demo_mercado_atacadista"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "888e929e-c79e-4e6d-9bb2-487966b142eb"
+  }
+}

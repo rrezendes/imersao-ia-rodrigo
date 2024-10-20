@@ -1,0 +1,180 @@
+table Medidas
+	lineageTag: e2ca716c-ef98-4db6-b68b-cd01811e7e6b
+
+	measure 'Preço Médio Venda' = AVERAGE(fVendas[valor_unitario_produto])
+		displayFolder: Preço
+		lineageTag: e7ff5325-035d-4695-9fe9-f256272ec633
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Custo total' = SUM(fVendas[custo_da_venda])
+		displayFolder: Custo
+		lineageTag: f90f8926-942f-45af-b62f-b906b183396b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Faturamento = SUM(fVendas[valor_total])
+		formatString: #,0.00
+		displayFolder: Faturamento
+		lineageTag: 64377bb4-4243-4cde-a64b-3299a0197849
+
+	measure 'Qnt Vendas' = COUNT(fVendas[numero_nota])
+		formatString: 0
+		displayFolder: Produtos vendidos
+		lineageTag: 6d884abf-53f4-41dd-8fd9-7daedbd80581
+
+	measure 'Qnt produtos vendidos' = SUM(fVendas[quantidade_vendida_produto])
+		formatString: #,0
+		displayFolder: Produtos vendidos
+		lineageTag: 06171ed5-c9f4-46e5-8c87-8b91c60edba1
+
+	measure Margem = SUMX(fVendas, fVendas[valor_total] - fVendas[custo_da_venda])
+		displayFolder: Margem
+		lineageTag: 23c54683-ecef-4a16-be76-3a3985bb69ad
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Margem média' = AVERAGEX(fVendas, fVendas[valor_unitario_produto] - fVendas[Custo unitário])
+		displayFolder: Margem
+		lineageTag: ea75b46f-acf7-4451-b957-ec494152ae21
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Margem' = DIVIDE([Margem], [Faturamento])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Margem
+		lineageTag: 1b2da9ea-c81b-4d89-b7bd-e59022002399
+
+	measure 'Preço Mínimo' = MIN(fVendas[valor_unitario_produto])
+		displayFolder: Preço
+		lineageTag: bd5b5a71-a463-44f9-88b8-831a93068a76
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Variação tabela' = DIVIDE([Preço Médio Venda] - [Preço Médio Tabela], [Preço Médio Tabela])
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		displayFolder: Variação tabela
+		lineageTag: 18457daf-4482-451e-9d0a-52f94992285c
+
+	measure 'Preço Médio Tabela' = AVERAGE(fVendas[valor_tabela_de_preco_do_produto])
+		displayFolder: Preço
+		lineageTag: 832a4877-1273-4d16-bf69-0cc98f7b1527
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Faturamento Formatado com % GM' = [Faturamento]
+		displayFolder: Faturamento
+		lineageTag: 77d71bb6-d226-4c67-ad8a-db50e6207e63
+
+		formatStringDefinition = """" &  format([Faturamento],"0,0") & " | " &  FORMAT([% Margem],"0.0%") & """"
+
+	measure 'Custo médio' = AVERAGE(fVendas[Custo unitário])
+		displayFolder: Custo
+		lineageTag: 9a937b5c-ba47-4e05-81f5-5a0da4b0b1de
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Faturamento Ano Anterior' = ```
+			
+			CALCULATE([Faturamento], 
+			SAMEPERIODLASTYEAR(dCalendario[Date])
+			)
+			```
+		displayFolder: Faturamento
+		lineageTag: e4e64dab-04dc-44fd-ae09-b1931c0bf554
+
+		formatStringDefinition = """" &  format([Faturamento Ano Anterior],"0,0") & " | " &  FORMAT([% variação faturamento ano anterior],"0.0%") & """"
+
+	measure '% variação faturamento ano anterior' = ```
+			1 - DIVIDE([Faturamento Ano Anterior], [Faturamento]) 
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Faturamento
+		lineageTag: 0f12ab98-f64b-4b80-966a-c2885406308c
+
+	measure 'Margem Ano Anterior' = ```
+			
+			CALCULATE([Margem], 
+			SAMEPERIODLASTYEAR(dCalendario[Date])
+			)
+			```
+		displayFolder: Margem
+		lineageTag: 1b4782e3-5a55-4a23-b192-2b826ebe3460
+
+		formatStringDefinition = """" &  format([Margem Ano Anterior],"0,0") & " | " &  FORMAT([% variação margem ano anterior],"0.0%") & """"
+
+	measure '% variação margem ano anterior' = ```
+			1 - DIVIDE([Margem Ano Anterior], [Margem]) 
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Margem
+		lineageTag: 3f13c40e-15e7-499e-a7fe-f082ce8e1be9
+
+	measure '% Margem Ano Anterior' = ```
+			
+			CALCULATE([% Margem], 
+			SAMEPERIODLASTYEAR(dCalendario[Date])
+			)
+			```
+		displayFolder: Margem
+		lineageTag: 24dfdbe3-9fbf-494e-be01-ef79d09ee983
+
+		formatStringDefinition = """" &  format([% Margem Ano Anterior],"0,0%") & " | " &  FORMAT([% (variação % margem ano anterior)],"0.0%") & """"
+
+	measure '% (variação % margem ano anterior)' = ```
+			1 - DIVIDE([% Margem Ano Anterior], [% Margem]) 
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Margem
+		lineageTag: 11f8e9cd-2cbf-480a-a127-c2c06b459f8d
+
+	measure '% Variação tabela Ano Anterior' = ```
+			
+			CALCULATE([% Variação tabela], 
+			SAMEPERIODLASTYEAR(dCalendario[Date])
+			)
+			```
+		displayFolder: Variação tabela
+		lineageTag: fa23d9f0-bb6f-4b89-9c48-ecb9471c07bb
+
+		formatStringDefinition = """" &  format([% Variação tabela Ano Anterior],"0,0%") & " | " &  FORMAT([% (variação % variação tabela ano anterior)],"0.0%") & """"
+
+	measure '% (variação % variação tabela ano anterior)' = ```
+			1 - DIVIDE([% Variação tabela Ano Anterior], [% Variação tabela]) 
+			```
+		displayFolder: Variação tabela
+		lineageTag: 8f3264c5-dd06-42c9-9a51-4476bbece32b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Qnt produtos vendidos Ano Anterior' = ```
+			
+			CALCULATE([Qnt produtos vendidos], 
+			SAMEPERIODLASTYEAR(dCalendario[Date])
+			)
+			```
+		displayFolder: Produtos vendidos
+		lineageTag: a34f0c1f-cecf-4fa3-add7-81d176b8ddeb
+
+		formatStringDefinition = """" &  format([Qnt produtos vendidos Ano Anterior],"0,0") & " | " &  FORMAT([% variação produtos vendidos ano anterior],"0.0%") & """"
+
+	measure '% variação produtos vendidos ano anterior' = ```
+			1 - DIVIDE([Qnt produtos vendidos Ano Anterior], [Qnt produtos vendidos]) 
+			```
+		displayFolder: Produtos vendidos
+		lineageTag: 6cdb2e3f-fbf3-4a64-ad3a-fe7e3ec8b3b7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Medidas = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,161 @@
+table dCalendario
+	lineageTag: c6d59c58-6721-4494-bb42-21fc5a06b2cb
+
+	column Date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 10842d46-c46f-444b-8afd-0beaa6ec2d43
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: fc5f8497-a3ff-465f-99f6-dbb5866a4be1
+			defaultHierarchy: LocalDateTable_3a09eee1-76d4-47ea-8db0-4da3e980f0be.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		dataType: string
+		lineageTag: 930635f6-663c-42f8-88ff-06734b67478e
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Ano]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês Nome'
+		dataType: string
+		lineageTag: fd0099be-42ea-40f0-83b7-90e168d64320
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Mês Nome]
+		sortByColumn: 'Mês Num'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês Num'
+		dataType: int64
+		formatString: 0
+		lineageTag: 92021bb9-9a69-4a43-a0c5-545e87a6479b
+		summarizeBy: sum
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Mês Num]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: 41570d50-c94b-4b67-9aed-9b2b8b55d1fb
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Trimestre]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês Ano'
+		dataType: string
+		lineageTag: 6584f268-894f-4f52-a499-0752838cb6b0
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Mês Ano]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia Semana Ano'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1e3d8738-06bd-4da3-b590-58990301515b
+		summarizeBy: sum
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Dia Semana Ano]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ano Mês'
+		dataType: string
+		lineageTag: 4faf1b17-7306-4308-a59a-396a3ce4e37f
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Ano Mês]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Primeiro dia Mes'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5bec1b4c-851c-4526-be8e-6c07db0f8c80
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Primeiro dia Mes]
+
+		variation Variation
+			isDefault
+			relationship: 5d05e224-dbfb-4a7d-94eb-c6c0a67517a9
+			defaultHierarchy: LocalDateTable_be2e0fc9-2400-4f68-91bd-0790e39fee68.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia Mês'
+		dataType: string
+		lineageTag: cdccee11-9c67-41e8-958a-8af57f06b769
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Dia Mês]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês Dia'
+		dataType: string
+		lineageTag: 1af32e9f-7612-46b0-9c24-15933b054320
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Mês Dia]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendario = calculated
+		mode: import
+		source =
+				
+				
+				ADDCOLUMNS(
+				
+				CALENDAR(MIN(fVendas[data_venda]),max(fVendas[data_venda])),
+				
+				"Ano",FORMAT([Date],"yyyy"),
+				
+				"Mês Nome",FORMAT([Date],"mmm"),
+				
+				"Mês Num",MONTH([Date]),
+				
+				"Trimestre",FORMAT([Date],"q"),
+				
+				"Mês Ano",CONCATENATE(FORMAT([Date],"mmm "),FORMAT([Date],"yyyy")),
+				
+				"Dia Semana Ano",WEEKDAY([Date]),
+				
+				"Dia Mês", FORMAT([Date],"dd/MM"),
+				
+				"Mês Dia", FORMAT([Date],"MM/dd"),
+				
+				"Ano Mês",CONCATENATE(FORMAT([Date],"yyyy"),FORMAT([Date],"mmm")),
+				
+				"Primeiro dia Mes",date(YEAR([Date]),MONTH([Date]),1)
+				
+				)
+
+	annotation PBI_Id = 859f568c87e24c3ab8eb4f06cd113a2e
+

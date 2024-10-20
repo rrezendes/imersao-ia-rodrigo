@@ -1,0 +1,14 @@
+relationship fc5f8497-a3ff-465f-99f6-dbb5866a4be1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendario.Date
+	toColumn: LocalDateTable_3a09eee1-76d4-47ea-8db0-4da3e980f0be.Date
+
+relationship fdfe428d-838a-17ec-89e8-2acde475ca01
+	fromColumn: fVendas.data_venda
+	toColumn: dCalendario.Date
+
+relationship 5d05e224-dbfb-4a7d-94eb-c6c0a67517a9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendario.'Primeiro dia Mes'
+	toColumn: LocalDateTable_be2e0fc9-2400-4f68-91bd-0790e39fee68.Date
+

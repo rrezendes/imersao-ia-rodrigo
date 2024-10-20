@@ -1,0 +1,144 @@
+table fVendas
+	lineageTag: 16de127f-d38b-40fa-95f7-fce41197e8a9
+
+	column data_venda
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7757eb54-9f19-4a20-b05a-c5c360148b2b
+		summarizeBy: none
+		sourceColumn: data_venda
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column numero_nota
+		dataType: int64
+		formatString: 0
+		lineageTag: 379600df-bed5-4f97-b038-77ebcb723b3d
+		summarizeBy: sum
+		sourceColumn: numero_nota
+
+		annotation SummarizationSetBy = Automatic
+
+	column codigo_produto
+		dataType: string
+		lineageTag: 5a2a712e-d321-470c-a591-7413e6c8bb51
+		summarizeBy: none
+		sourceColumn: codigo_produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao_produto
+		dataType: string
+		lineageTag: 0338aba4-7b88-4d13-9a08-63fffadc8b35
+		summarizeBy: none
+		sourceColumn: descricao_produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column codigo_cliente
+		dataType: string
+		lineageTag: ae0a4e96-e634-4106-ba4e-2ae1eaeba135
+		summarizeBy: none
+		sourceColumn: codigo_cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao_cliente
+		dataType: string
+		lineageTag: cff54674-0c83-4250-942c-1fe53481bf05
+		summarizeBy: none
+		sourceColumn: descricao_cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_unitario_produto
+		dataType: double
+		lineageTag: f298bb26-3c2c-42b2-9f80-71b41e2de70f
+		summarizeBy: sum
+		sourceColumn: valor_unitario_produto
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column quantidade_vendida_produto
+		dataType: int64
+		formatString: 0
+		lineageTag: 389f8f32-8d1f-4548-8255-bb0fc81ee65e
+		summarizeBy: sum
+		sourceColumn: quantidade_vendida_produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_total
+		dataType: double
+		lineageTag: 7993eadb-011a-4989-8c85-33b5473ee30a
+		summarizeBy: sum
+		sourceColumn: valor_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column custo_da_venda
+		dataType: double
+		lineageTag: ad65686e-d615-4195-b3e2-35cc2526bf9d
+		summarizeBy: sum
+		sourceColumn: custo_da_venda
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column valor_tabela_de_preco_do_produto
+		dataType: int64
+		formatString: 0
+		lineageTag: bb259ffb-0830-4b9c-a4b9-0d7a71c8a0ba
+		summarizeBy: sum
+		sourceColumn: valor_tabela_de_preco_do_produto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Custo unitário'
+		dataType: double
+		lineageTag: a939a8c6-17bb-4e73-8d88-b024a736fc24
+		summarizeBy: sum
+		sourceColumn: Custo unitário
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Margem unitária'
+		dataType: double
+		lineageTag: 3a69b47e-acd5-4aaf-a95c-dd8ef1cc0ff3
+		summarizeBy: sum
+		sourceColumn: Margem unitária
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fVendas = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\alexandre\OneDrive - dataholds.com\Documentos - dataholds.com\2. Comercial\Demonstrações\Demo Mercado Atacadista\dados\sales_data_with_dates.xlsx"), null, true),
+				    Sheet1_Sheet = Fonte{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"data_venda", type date}, {"numero_nota", Int64.Type}, {"codigo_produto", type text}, {"descricao_produto", type text}, {"codigo_cliente", type text}, {"descricao_cliente", type text}, {"valor_unitario_produto", type number}, {"quantidade_vendida_produto", Int64.Type}, {"valor_total", type number}, {"custo_da_venda", type number}, {"valor_tabela_de_preco_do_produto", Int64.Type}}),
+				    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Custo de venda unitário", each [custo_da_venda]/[quantidade_vendida_produto]),
+				    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Custo de venda unitário", type number}}),
+				    #"Personalização Adicionada1" = Table.AddColumn(#"Tipo Alterado1", "Personalizar", each [valor_unitario_produto] - [Custo de venda unitário]),
+				    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Personalizar", type number}}),
+				    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado2",{{"Personalizar", "Margem unitária"}, {"Custo de venda unitário", "Custo unitário"}}),
+				    #"Colunas Reordenadas" = Table.ReorderColumns(#"Colunas Renomeadas",{"data_venda", "numero_nota", "codigo_produto", "descricao_produto", "codigo_cliente", "descricao_cliente", "valor_unitario_produto", "Custo unitário", "Margem unitária", "quantidade_vendida_produto", "valor_total", "custo_da_venda", "valor_tabela_de_preco_do_produto"})
+				in
+				    #"Colunas Reordenadas"
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

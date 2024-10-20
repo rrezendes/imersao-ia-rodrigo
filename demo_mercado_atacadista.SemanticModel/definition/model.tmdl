@@ -1,0 +1,26 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["fVendas","Medidas","dTipoVariacao"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.137.751.0 (24.10)
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table fVendas
+ref table DateTableTemplate_1c36ac03-68d9-453f-99f4-d2d29f811ad1
+ref table dCalendario
+ref table Medidas
+ref table LocalDateTable_3a09eee1-76d4-47ea-8db0-4da3e980f0be
+ref table LocalDateTable_be2e0fc9-2400-4f68-91bd-0790e39fee68
+ref table dTipoVariacao
+
+ref cultureInfo pt-BR
+
