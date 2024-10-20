@@ -26,7 +26,5 @@ table dTipoVariacao
 				in
 				    #"Tipo Alterado"
 
-	changedProperty = Name
-
 	annotation PBI_ResultType = Table
 
